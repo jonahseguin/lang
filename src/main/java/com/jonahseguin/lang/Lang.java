@@ -2,7 +2,6 @@ package com.jonahseguin.lang;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import com.sun.istack.internal.NotNull;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Set;
@@ -23,9 +22,11 @@ public class Lang {
     /**
      * Create a Lang instance for managing language definitions for your plugin
      * Cannot be null
-     * @param plugin {@link NotNull} {@link Plugin} {@link org.bukkit.plugin.java.JavaPlugin} your plugin's main class
+     * Makes a call to set the language by default to "en" (English) via {@link #language(String)}
+     * @param plugin {@link Plugin} {@link org.bukkit.plugin.java.JavaPlugin} your plugin's main class
      */
-    public Lang(@NotNull Plugin plugin) {
+    public Lang(Plugin plugin) {
+        Preconditions.checkNotNull(plugin);
         this.plugin = plugin;
         this.file = new LangFile(this);
         this.language("en");
@@ -36,7 +37,7 @@ public class Lang {
      * @param language The name of the language.  The default is "en" and is called in the constructor above. {@link #Lang(Plugin)}
      * @return True if successfully loads & saves the language file by name (will create & write defaults), False if it fails in any way
      */
-    public boolean language(@NotNull String language) {
+    public boolean language(String language) {
         Preconditions.checkNotNull(language);
         if (this.language == null || !this.language.equalsIgnoreCase(language)) {
             this.language = language;
@@ -45,7 +46,11 @@ public class Lang {
         return true;
     }
 
-    @NotNull
+    /**
+     * Gets the currently set language (the name of the language, default is "en")
+     *
+     * @return the currently set language name
+     */
     public String language() {
         return this.language;
     }
@@ -55,33 +60,48 @@ public class Lang {
      * @param name The name of the module
      * @return {@link LangDefinitions} the module
      */
-    @NotNull
     public LangDefinitions module(String name) {
+        Preconditions.checkNotNull(name);
         return modules.computeIfAbsent(name.toLowerCase(), LangDefinitions::new);
     }
 
+    public LangDefinitions module(LangModule module) {
+        Preconditions.checkNotNull(module);
+        return module(module.langModule());
+    }
+
     /**
-     *
-     * @param module
+     * Register a module {@link LangModule} for language definitions
+     * @param module the {@link LangModule} implementation to register
      */
-    public void register(@NotNull LangModule module) {
+    public void register(LangModule module) {
+        Preconditions.checkNotNull(module);
         module.define(this.module(module.langModule()));
     }
 
-    @NotNull
     public Plugin plugin() {
         return plugin;
     }
 
-    @NotNull
     public Set<LangDefinitions> modules() {
         return ImmutableSet.copyOf(this.modules.values());
     }
 
+    /**
+     * Load from the config file for this language
+     *
+     * @return True if successful, else False
+     * @see #language()
+     */
     public boolean load() {
         return file.load();
     }
 
+    /**
+     * Save to the config file for this language
+     * @see #language()
+     * @return True if successful, else False
+     */
     public boolean save() {
         return file.save();
     }

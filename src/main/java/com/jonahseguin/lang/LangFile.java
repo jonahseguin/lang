@@ -1,7 +1,6 @@
 package com.jonahseguin.lang;
 
 import com.google.common.base.Preconditions;
-import com.sun.istack.internal.NotNull;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,7 +15,8 @@ class LangFile {
     private File directory;
     private YamlConfiguration config;
 
-    LangFile(@NotNull Lang controller) {
+    LangFile(Lang controller) {
+        Preconditions.checkNotNull(controller);
         this.controller = controller;
     }
 
