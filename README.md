@@ -31,6 +31,9 @@ public class MyPlugin extends JavaPlugin implements LangModule {
     public void onEnable() {
         this.lang = new Lang(this);
         
+        lang.register(this); // important call to register this LangModule.  This registers the definitions.
+        // You must register all of your LangModule implementations using this!
+        
         if (!lang.language("en")) {
             // unnecessary call but this is just to show the functionality.  This call loads the file 'MyPlugin/lang/en.yml'
             // the above call also will create the file if it doesn't exist, and writes defaults/missing definitions to the file.
