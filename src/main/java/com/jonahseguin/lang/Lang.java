@@ -76,7 +76,9 @@ public class Lang {
      */
     public void register(LangModule module) {
         Preconditions.checkNotNull(module);
-        module.define(this.module(module.langModule()));
+        if (!modules.containsKey(module.langModule().toLowerCase())) {
+            module.define(this.module(module.langModule()));
+        }
     }
 
     public Plugin plugin() {

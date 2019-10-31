@@ -90,7 +90,13 @@ public class LangDefinitions {
     public void define(String key, String format) {
         Preconditions.checkNotNull(key);
         Preconditions.checkNotNull(format);
-        this.definitions.put(key.toLowerCase(), format);
+        this.definitions.putIfAbsent(key.toLowerCase(), format);
+    }
+
+    public void set(String key, String format) {
+        Preconditions.checkNotNull(key);
+        Preconditions.checkNotNull(format);
+        this.definitions.put(key, format);
     }
 
     public void extend(String key, String newKey, Object... args) {
